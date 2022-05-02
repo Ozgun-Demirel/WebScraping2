@@ -1,0 +1,82 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>8585f414-ad02-4205-a00e-61bcaaa8bcd8</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>Concrete\Walmart\Scripts\Final.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Manager</Name>
+    <RootNamespace>Manager</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Abstract\BrowserControl\IPAG.py" />
+    <Compile Include="Abstract\BrowserControl\__init__.py" />
+    <Compile Include="Abstract\EasierFunctions\IFUNC.py" />
+    <Compile Include="Abstract\EasierFunctions\__init__.py" />
+    <Compile Include="Abstract\__init__.py" />
+    <Compile Include="Concrete\Walmart\Scripts\DynamicInputs.py" />
+    <Compile Include="Concrete\Walmart\Scripts\Final.py" />
+    <Compile Include="Concrete\Walmart\Scripts\AnomalyDetector.py" />
+    <Compile Include="Concrete\Walmart\Scripts\WmAllDepsSource.py" />
+    <Compile Include="Concrete\Walmart\Scripts\WmProductsLinkScrapper.py" />
+    <Compile Include="Manager 3.py" />
+    <Compile Include="Manager2.py" />
+    <Compile Include="RobotOrHumanDynamic.txt" />
+    <Compile Include="Manager.py" />
+    <Compile Include="TryOuts\TimeDisplay.py" />
+    <Compile Include="TryOuts\ForNavbarFindName.py" />
+    <Compile Include="TryOuts\DisplayMouse.py" />
+    <Compile Include="TryOuts\Link-identifier.py" />
+    <Compile Include="TryOuts\osExamples.py" />
+    <Compile Include="TryOuts\ScrollDown.py" />
+    <Compile Include="TryOuts\File.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Abstract\" />
+    <Folder Include="Abstract\BrowserControl\" />
+    <Folder Include="Abstract\EasierFunctions\" />
+    <Folder Include="Concrete\" />
+    <Folder Include="Concrete\Walmart\" />
+    <Folder Include="Concrete\Walmart\Products\Sources\" />
+    <Folder Include="Concrete\Walmart\Results\" />
+    <Folder Include="Concrete\Walmart\Scripts\" />
+    <Folder Include="Concrete\Walmart\Saves\" />
+    <Folder Include="Concrete\Walmart\Products\" />
+    <Folder Include="Concrete\Walmart\Saves\AllSources\" />
+    <Folder Include="TryOuts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="RobotOrHuman.txt" />
+    <Content Include="Try .txt" />
+    <Content Include="problemLinks.txt" />
+    <Content Include="SorryTechnicalssues.txt" />
+    <Content Include="Lays.txt" />
+    <Content Include="Chips.txt" />
+    <Content Include="Concrete\Walmart\Products\ProductsLink.txt" />
+    <Content Include="Concrete\Walmart\Saves\ForInfo.txt" />
+    <Content Include="Concrete\Walmart\Saves\Chips.txt" />
+    <Content Include="Concrete\Walmart\Saves\NavbarHtmlFile.txt" />
+    <Content Include="Concrete\Walmart\Saves\WmAllDeps=.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

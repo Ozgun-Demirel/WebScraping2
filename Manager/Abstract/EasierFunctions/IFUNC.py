@@ -35,7 +35,11 @@ def getContent(path, readType = "read"):
 
     elif readType == "readlines":
         with open(path,"r",encoding="utf-8") as f1:
-            return f1.readlines()
+            content =  f1.readlines()
+            tempList = []
+            for i in content:
+                tempList.append(i.replace("\n",""))
+            return tempList
 
 
 

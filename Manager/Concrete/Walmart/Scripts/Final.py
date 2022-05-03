@@ -37,7 +37,6 @@ class Main():
         with open(filePath,"r") as dataFile:
             content = dataFile.readlines()
         return content 
-
     
 
     def TryCollectingDepsLinks(self):
@@ -76,30 +75,25 @@ class Main():
 
             else:
                 print("This link is unuseable: \n"+i)
+        print("TryCollectingDepsLinks Function is done!")
 
-        print("All Links have been openned")
-
-
+    # þu anda kullanýlmýyor. ihtiyaç olmazsa silinecek. Tekrar kullanýlýrsa bu kýsým silinmeli
     def loadClassAttrs(self):
         with open(self.DynamicInputsPath,"r", encoding="utf-8") as f1:
             ClassContent = f1.readlines()
         self.subMenuClass = ClassContent[0].replace("\n","")
         self.productsMenuClass = ClassContent[1].replace("\n","")
 
-    def TotalMission(self):
+    def TotalMission(self, overWrite = False):
         """
         This function opens file that contains the links
         in Walmart All Departments page , defines 
         page type (Products, subMenu container, Others yet to define)
         and extracts all requested data
         """
-
         self.gc = GeneralControls()
+        
 
-        
-        self.Links = list(set(self.getFileContent(self.AllDepsTXTPath)).copy())
-        
-        
         def newDynamicInputTaker():
             """
             Walmart Tags' class changes dynamically.
@@ -119,7 +113,7 @@ class Main():
                 pag.run("g1877, 169 c")
 
                 if sourceType == "Inspector":
-                    fileHtml = gc.returnPageSourceStrFromInspector()
+                    fileHtml = self.gc.returnPageSourceStrFromInspector()
                     writeToFile(fileHtml,filePath)
 
                 elif sourceType == "PageSource":
@@ -153,13 +147,19 @@ class Main():
             return [subMenuClassExtractor(), productsDivClassExtractor()] # subNavbarClassExtractor(),
         
         
+        classContents = getContent(self.DynamicInputsPath, readType =  "readlines")
+        self.subMenuClass, self.productsMenuClass = classContents
+
+
+        if not os.path.exists(r"C:\Users\Lenovo\source\repos\Manager\Manager\Concrete\Walmart\Products\Sources"):
+            os.mkdir(r"C:\Users\Lenovo\source\repos\Manager\Manager\Concrete\Walmart\Products\Sources")
 
         self.UnknownPage = False
         self.UnknownPageCount = 0
         self.Robot = False
 
-        self.loadClassAttrs()
-
+        self.Links = list(set(self.getFileContent(self.AllDepsTXTPath)).copy())
+       
         for currentLink in self.Links:
 
             def MainLoop(linkInput):
@@ -172,13 +172,10 @@ class Main():
                 
                 def defineMenuName(link):
                     rawLocation = (link.replace(WMURL,"")).replace("\n","")
-
                     if rawLocation.startswith("/browse"):
                         location = rawLocation.replace("/browse/","")
-
                     elif rawLocation.startswith("/cp"):
                         location = rawLocation.replace("/cp/","")
-
                     else:
                         # print(rawLocation)
                         location = rawLocation
@@ -190,12 +187,10 @@ class Main():
                         i = i.replace("-"," ")
                         tempList.append(i)
 
-
                     if not re.findall("[0-9]",tempList[(len(tempList)*-1)+1]):
                         name = " ".join(tempList[0:2])
                     else:
                         name = tempList[0]
-
                     return name.strip().capitalize()
 
                 self.currentPageName = defineMenuName(linkInput)
@@ -207,7 +202,7 @@ class Main():
                     time.sleep(10)
                     print("gc is resetted")
                     self.gc = GeneralControls()
-                    return MainLoop(self.Links[self.Links.index(linkInput)+1])
+                    return 1
 
                 self.gc.openURL(linkInput)
                 time.sleep(2.5)
@@ -222,10 +217,9 @@ class Main():
                         pag.mouseDown()
                         pag.sleep(8)
                         pag.mouseUp()
+                        pag.run("c")
                         time.sleep(10)
                         return MainLoop(linkInput)
-
-                
                 #dynamic robotOrHuman solver:
                 dynamicRobotXPath = "html>body>div:nth-of-type(2)>div>div:nth-of-type(3)>div:nth-of-type(1)>div"
                 if not type(soup.select_one(dynamicRobotXPath)) == type(None):
@@ -240,15 +234,12 @@ class Main():
                             print("Robot Check Dynamic Is Passed!") 
                         else:
                             print("Robot Check Dynamic Is Not Found!")
-                    
-
                 #Sorry for technical issues solver:
                 issuesXPath = "html>body>div:nth-of-type(1)>div:nth-of-type(1)>div>div>div>div>main>div>span"
                 if not type(soup.select_one(issuesXPath)) == type(None):
                     if soup.select_one(issuesXPath).text.__contains__("having technical issues"):
                         return MainLoop(linkInput)
-
-
+                    
                 subMenu = soup.findAll("div",{"class":self.subMenuClass})
                 if subMenu:
                     self.UnknownPage = False
@@ -263,16 +254,23 @@ class Main():
                         else:
                             print("Can't find products under subMenu!!")
                     self.Links.extend(x for x in extractedLinks if x not in self.Links)
+
                 else:
+
                     navbar = soup.find("nav",{"class":"mt6 mb5"})
-                
-                    
                     if navbar:
                         """
                         If page has a navbar for products,
                         Extract page source
                         """
+
                         self.UnknownPage = False
+
+                        if overWrite == True:
+                            folderName = self.SourcesPath+"/"+self.currentPageName
+                            if os.path.exists(folderName):
+                                if len(os.listdir(folderName)) == 25:
+                                    return 0
 
                         # creating a folder for same group of products
                         folderName = self.SourcesPath+"/"+self.currentPageName
@@ -281,12 +279,14 @@ class Main():
 
                         time.sleep(0.3)
 
+                        
+
                         navbarList = (navbar.find("ul")).findAll("li")
-                        productPageCount = int(navbarList[-2].text)
                         
                         tempLinks = [linkInput]
 
                         if len(navbarList) > 2:
+                            productPageCount = int(navbarList[-2].text)+1
                             for count in range(2, productPageCount):
                                 tempLinks.append(linkInput+f"?page={count}")
 
@@ -315,8 +315,9 @@ class Main():
                             writeToFile(newClass, self.DynamicInputsPath, "writelines")
                             self.loadClassAttrs()
                             return MainLoop(linkInput)
+                print("Link input is passed: " +currentLink)
             MainLoop(currentLink)
-            print("Link input is passed: " +currentLink)
+
         #gc.finalize()       
                         
 
@@ -364,10 +365,16 @@ class reArranger():
 
 
 
-"""
 m= Main()
-m.TotalMission()
+m.TotalMission(overWrite = True)
+endTime = time.ctime()
+print(startTime)
+print(endTime)
+
+
+
 """
+
 
 try:
     m = Main()
@@ -380,4 +387,4 @@ except Exception as err:
     print(endTime)
     
 
-
+"""
